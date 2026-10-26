@@ -1,5 +1,10 @@
 package com.example.prestaaula.ui.components
 
+// NOTAS DE AMARO Y SOTO
+// Tarjeta para mostrar una reserva y permitir confirmar el retiro cuando todavía está reservada.
+// La idea de estos comentarios es explicar el código como apunte de clase.
+
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.example.prestaaula.model.Reserva
 
 @Composable
+// Muestra datos principales de una reserva y el botón que corresponde a su estado.
 fun ReservaCard(reserva: Reserva, onConfirmarRetiro: (String) -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -35,15 +41,17 @@ fun ReservaCard(reserva: Reserva, onConfirmarRetiro: (String) -> Unit) {
             Spacer(Modifier.height(6.dp))
             Text("${reserva.fecha} · ${reserva.horario}", style = MaterialTheme.typography.bodyMedium)
             Text("${reserva.curso} · ${reserva.docente}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            if (reserva.esHoy && reserva.estado == "RESERVADA") {
+            // Solo una reserva pendiente puede confirmar el retiro.
+            if (reserva.estado == "RESERVADA") {
                 Spacer(Modifier.height(12.dp))
                 Button(onClick = { onConfirmarRetiro(reserva.id) }, modifier = Modifier.fillMaxWidth()) {
                     Text("Confirmar retiro")
                 }
-            } else if (reserva.esHoy && reserva.estado == "RETIRADA") {
+            // Si ya se retiró, mostramos el aviso y desactivamos el botón.
+            } else if (reserva.estado == "RETIRADA") {
                 Spacer(Modifier.height(12.dp))
                 OutlinedButton(onClick = {}, modifier = Modifier.fillMaxWidth(), enabled = false) {
-                    Text("Retiro confirmado")
+                    Text("Retiro confirmado · pendiente de devolución")
                 }
             }
         }

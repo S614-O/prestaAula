@@ -1,5 +1,10 @@
 package com.example.prestaaula.ui.screens
 
+// NOTAS DE AMARO Y SOTO
+// Pantalla inicial. Muestra el nombre del sistema y las tarjetas para entrar como docente, encargado CRA o administración.
+// La idea de estos comentarios es explicar el código como apunte de clase.
+
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +34,7 @@ import com.example.prestaaula.ui.theme.CelesteSuave
 import com.example.prestaaula.ui.theme.Fondo
 
 @Composable
+// Es el menú principal. Aquí todavía no se consultan datos: solo se elige a qué sección entrar.
 fun HomeScreen(
     onDocenteClick: () -> Unit,
     onCraClick: () -> Unit,
@@ -57,6 +63,7 @@ fun HomeScreen(
             Spacer(Modifier.height(28.dp))
             Text("¿Cómo deseas ingresar?", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.height(14.dp))
+            // Cada tarjeta llama al callback que conecta con una ruta en NavGraph.
             RoleCard(Rol.DOCENTE, "▣", onDocenteClick)
             Spacer(Modifier.height(12.dp))
             RoleCard(Rol.ENCARGADO_CRA, "↻", onCraClick)
@@ -67,6 +74,7 @@ fun HomeScreen(
 }
 
 @Composable
+// Una sola tarjeta sirve para los tres roles; solo cambia el texto, símbolo y acción.
 private fun RoleCard(rol: Rol, simbolo: String, onClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),

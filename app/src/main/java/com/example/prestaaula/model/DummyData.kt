@@ -1,5 +1,9 @@
 package com.example.prestaaula.model
 
+/**
+ * DATOS DE PRUEBA QUE YA NO SE USAN YA QUE ESTA FUNCIONANDO CON ROOM Y BD
+ */
+
 object DummyData {
     val equipos = listOf(
         Equipo(

@@ -1,5 +1,10 @@
 package com.example.prestaaula.ui.components
 
+// NOTAS DE AMARO Y SOTO
+// Tarjeta pequeña para mostrar un número importante y su título en Reportes.
+// La idea de estos comentarios es explicar el código como apunte de clase.
+
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
+// Componente simple para no repetir el mismo diseño en cada indicador.
 fun MetricCard(valor: String, titulo: String, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier.fillMaxWidth(),

@@ -1,5 +1,10 @@
 package com.example.prestaaula.ui.components
 
+// NOTAS DE AMARO Y SOTO
+// Título reutilizable para separar secciones de una pantalla.
+// La idea de estos comentarios es explicar el código como apunte de clase.
+
+
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -11,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.example.prestaaula.ui.theme.AzulPetroleo
 
 @Composable
+// Este título se usa en varias pantallas para separar listas por tema.
 fun SectionHeader(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,

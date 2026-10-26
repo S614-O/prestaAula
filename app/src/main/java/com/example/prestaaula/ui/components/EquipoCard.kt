@@ -1,5 +1,10 @@
 package com.example.prestaaula.ui.components
 
+// NOTAS DE AMARO Y SOTO
+// Tarjeta reutilizable que muestra un equipo, su estado y el botón para reservar si está disponible.
+// La idea de estos comentarios es explicar el código como apunte de clase.
+
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +26,7 @@ import com.example.prestaaula.model.Equipo
 import com.example.prestaaula.model.EstadoEquipo
 
 @Composable
+// Se reutiliza por cada elemento del inventario. El botón aparece solo si el equipo está disponible.
 fun EquipoCard(equipo: Equipo, onReservar: (String) -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),

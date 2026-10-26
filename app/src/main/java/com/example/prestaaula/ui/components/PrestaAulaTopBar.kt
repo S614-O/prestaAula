@@ -1,5 +1,10 @@
 package com.example.prestaaula.ui.components
 
+// NOTAS DE AMARO Y SOTO
+// Barra superior reutilizable con título, subtítulo y una flecha opcional para volver.
+// La idea de estos comentarios es explicar el código como apunte de clase.
+
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,6 +22,7 @@ import com.example.prestaaula.ui.theme.TextoSecundario
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+// onBack es opcional: si no llega una acción, no dibujamos la flecha.
 fun PrestaAulaTopBar(
     titulo: String,
     subtitulo: String,

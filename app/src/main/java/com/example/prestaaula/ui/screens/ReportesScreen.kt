@@ -1,8 +1,12 @@
 package com.example.prestaaula.ui.screens
 
+// NOTAS DE AMARO Y SOTO
+// Calcula indicadores desde los datos reales guardados en Room y presenta el historial más reciente.
+// La idea de estos comentarios es explicar el código como apunte de clase.
+
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,15 +23,35 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.prestaaula.model.DummyData
-import com.example.prestaaula.model.Reporte
+import com.example.prestaaula.model.Equipo
+import com.example.prestaaula.model.EstadoEquipo
+import com.example.prestaaula.model.Reserva
 import com.example.prestaaula.ui.components.MetricCard
 import com.example.prestaaula.ui.components.PrestaAulaTopBar
 import com.example.prestaaula.ui.components.SectionHeader
 import com.example.prestaaula.ui.theme.Fondo
+import java.util.Calendar
 
 @Composable
-fun ReportesScreen(onBack: () -> Unit) {
+// Los indicadores se calculan usando las reservas y los equipos que están guardados.
+fun ReportesScreen(equipos: List<Equipo>, reservas: List<Reserva>, onBack: () -> Unit) {
+    // Obtenemos el mes actual para contar solo los préstamos de este mes.
+    val ahora = Calendar.getInstance()
+    val prestamosMes = reservas.count { reserva ->
+        val fecha = Calendar.getInstance().apply { timeInMillis = reserva.creadaEn }
+        fecha.get(Calendar.MONTH) == ahora.get(Calendar.MONTH) && fecha.get(Calendar.YEAR) == ahora.get(Calendar.YEAR)
+    }
+    val enMantencion = equipos.count { it.estado == EstadoEquipo.MANTENCION }
+    // Agrupamos las devoluciones con problemas por nombre de equipo y ordenamos por cantidad.
+    val porIncidencias = reservas
+        .filter { it.estadoDevolucion != null && it.estadoDevolucion != "Buen estado" }
+        .groupBy { it.equipoNombre }
+        .mapValues { it.value.size }
+        .entries
+        .sortedByDescending { it.value }
+    // Mostramos como máximo las seis reservas más recientes.
+    val historial = reservas.sortedByDescending { it.creadaEn }.take(6)
+
     Scaffold(
         containerColor = Fondo,
         topBar = { PrestaAulaTopBar("Reportes", "UTP / Administración", onBack) }
@@ -39,33 +63,56 @@ fun ReportesScreen(onBack: () -> Unit) {
             item {
                 Spacer(Modifier.height(4.dp))
                 Text("Resumen del CRA", style = MaterialTheme.typography.titleLarge)
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    MetricCard("128", "PRÉSTAMOS ESTE MES", Modifier.weight(1f))
-                    MetricCard("4", "EQUIPOS EN MANTENCIÓN", Modifier.weight(1f))
-                }
+                MetricCard(valor = prestamosMes.toString(), titulo = "PRÉSTAMOS REGISTRADOS ESTE MES")
+                MetricCard(valor = enMantencion.toString(), titulo = "EQUIPOS EN MANTENCIÓN")
+                MetricCard(valor = porIncidencias.sumOf { it.value }.toString(), titulo = "INCIDENCIAS REGISTRADAS")
                 SectionHeader("EQUIPOS CON MÁS INCIDENCIAS")
+                if (porIncidencias.isEmpty()) {
+                    EmptyReportCard("No hay incidencias registradas en la base de datos.")
+                }
             }
-            items(DummyData.equiposConIncidencias, key = { it.titulo }) { reporte -> ReporteCard(reporte) }
-            item { SectionHeader("HISTORIAL RECIENTE") }
-            items(DummyData.historialReciente, key = { it.titulo + it.fecha }) { reporte -> ReporteCard(reporte) }
+            items(porIncidencias, key = { "incidencia-${it.key}" }) { entrada ->
+                ReportRow(titulo = entrada.key, detalle = "${entrada.value} incidencia(s) registrada(s)")
+            }
+            item {
+                SectionHeader("HISTORIAL RECIENTE")
+                if (historial.isEmpty()) EmptyReportCard("No hay actividad registrada todavía.")
+            }
+            items(historial, key = { "historial-${it.id}" }) { reserva ->
+                ReportRow(
+                    titulo = reserva.equipoNombre,
+                    detalle = "${reserva.fecha} · ${reserva.horario} · ${reserva.estado}"
+                )
+            }
             item { Spacer(Modifier.height(16.dp)) }
         }
     }
 }
 
 @Composable
-private fun ReporteCard(reporte: Reporte) {
+// Mensaje sencillo para cuando aún no hay información que mostrar.
+private fun EmptyReportCard(message: String) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(reporte.titulo, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.height(4.dp))
-            Text(reporte.detalle, style = MaterialTheme.typography.bodyMedium)
-            Spacer(Modifier.height(6.dp))
-            Text(reporte.fecha, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(message, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
+
+@Composable
+// Fila reutilizable para cada incidencia o movimiento del historial.
+private fun ReportRow(titulo: String, detalle: String) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Text(titulo, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            Text(detalle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

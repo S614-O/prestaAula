@@ -1,5 +1,10 @@
 package com.example.prestaaula.ui.screens
 
+// NOTAS DE AMARO Y SOTO
+// Organiza las reservas entre las de hoy, las próximas y las que ya fueron devueltas.
+// La idea de estos comentarios es explicar el código como apunte de clase.
+
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,17 +26,21 @@ import com.example.prestaaula.ui.components.SectionHeader
 import com.example.prestaaula.ui.theme.Fondo
 
 @Composable
+// Divide las reservas según su fecha y si ya fueron devueltas.
 fun MisReservasScreen(
     reservas: List<Reserva>,
     onBack: () -> Unit,
     onNavigate: (String) -> Unit,
     onConfirmarRetiro: (String) -> Unit
 ) {
-    val hoy = reservas.filter { it.esHoy }
-    val proximas = reservas.filterNot { it.esHoy }
+    // Estas listas se calculan desde los datos que llegan de Room, no son datos de ejemplo.
+    val hoy = reservas.filter { it.esHoy && it.estado != "DEVUELTA" }
+    val proximas = reservas.filter { !it.esHoy && it.estado != "DEVUELTA" }
+    val completadas = reservas.filter { it.estado == "DEVUELTA" }
+// La barra inferior permite cambiar a Inventario sin volver a crear una pila de pantallas.
     Scaffold(
         containerColor = Fondo,
-        topBar = { PrestaAulaTopBar("Mis reservas", "Préstamos y horarios", onBack) },
+        topBar = { PrestaAulaTopBar("Mis reservas", "Préstamos y horarios guardados", onBack) },
         bottomBar = { PrestaAulaBottomBar(selectedRoute = "mis_reservas", onNavigate = onNavigate) }
     ) { innerPadding ->
         LazyColumn(
@@ -46,9 +55,13 @@ fun MisReservasScreen(
             items(hoy, key = { it.id }) { reserva -> ReservaCard(reserva, onConfirmarRetiro) }
             item {
                 SectionHeader("PRÓXIMAS")
-                if (proximas.isEmpty()) Text("No hay reservas próximas.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                if (proximas.isEmpty()) Text("No hay reservas pendientes para otras fechas.", color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             items(proximas, key = { it.id }) { reserva -> ReservaCard(reserva, onConfirmarRetiro) }
+            if (completadas.isNotEmpty()) {
+                item { SectionHeader("DEVUELTAS") }
+                items(completadas, key = { "devuelta-${it.id}" }) { reserva -> ReservaCard(reserva, onConfirmarRetiro) }
+            }
             item { Spacer(Modifier.height(16.dp)) }
         }
     }
