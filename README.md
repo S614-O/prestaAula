@@ -47,5 +47,4 @@ La aplicacion sigue MVVM: las pantallas muestran el estado, los ViewModels manej
 
 Es un proyecto academico. Los accesos son de demostracion y Room guarda los datos solo en el dispositivo. No incluye backend ni sincronizacion entre dispositivos.
 
-**Integrantes: Amaro y Soto**  
-Colegio Marcela Paz
+**Integrantes: Amaro Lazo y Sebastián Soto**  
