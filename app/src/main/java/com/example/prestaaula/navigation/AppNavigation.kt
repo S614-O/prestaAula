@@ -1,37 +1,53 @@
 package com.example.prestaaula.navigation
 
+// Aqui observamos los estados y conectamos las acciones de las pantallas con sus ViewModels
+
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
-import com.example.prestaaula.model.DummyData
-import com.example.prestaaula.model.Reserva
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.getValue
+import com.example.prestaaula.ui.theme.ThemeMode
+import com.example.prestaaula.ui.viewmodel.LoginViewModel
+import com.example.prestaaula.ui.viewmodel.PrestaAulaViewModel
 
 @Composable
-fun AppNavigation() {
-    val reservas = remember {
-        mutableStateListOf<Reserva>().apply { addAll(DummyData.reservas) }
-    }
+fun AppNavigation(
+    themeMode: ThemeMode,
+    onThemeModeChange: (ThemeMode) -> Unit
+) {
+    // Este ViewModel contiene los datos de equipos y reservas que usa la app
+    val viewModel: PrestaAulaViewModel = viewModel(factory = PrestaAulaViewModel.Factory)
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    // Este otro ViewModel revisa el acceso segun el rol elegido
+    val loginViewModel: LoginViewModel = viewModel()
+    val loginUiState by loginViewModel.uiState.collectAsStateWithLifecycle()
 
     NavGraph(
-        reservas = reservas,
-        onConfirmarReserva = { equipoId, equipoNombre, docente, curso, fecha, horario ->
-            val numero = (reservas.size + 1).toString().padStart(3, '0')
-            reservas.add(
-                Reserva(
-                    id = "R-$numero",
-                    equipoId = equipoId,
-                    equipoNombre = equipoNombre,
-                    docente = docente.trim(),
-                    curso = curso,
-                    fecha = fecha.trim(),
-                    horario = horario.substringBefore(" ("),
-                    esHoy = fecha.trim() == "19-10-2026"
-                )
-            )
-        },
-        onConfirmarRetiro = { reservaId ->
-            val index = reservas.indexOfFirst { it.id == reservaId }
-            if (index >= 0) reservas[index] = reservas[index].copy(estado = "RETIRADA")
-        }
+        uiState = uiState,
+        loginUiState = loginUiState,
+        onActualizarUsuarioLogin = loginViewModel::actualizarUsuario,
+        onActualizarClaveLogin = loginViewModel::actualizarClave,
+        // Esta funcion inicia la corrutina que revisa usuario y clave
+        onValidarAcceso = loginViewModel::validarAcceso,
+        onLimpiarLogin = loginViewModel::limpiarFormulario,
+        onIniciarFormularioReserva = viewModel::iniciarFormularioReserva,
+        onActualizarDocente = viewModel::actualizarDocente,
+        onActualizarCurso = viewModel::actualizarCurso,
+        onSeleccionarFecha = viewModel::seleccionarFecha,
+        onActualizarHorario = viewModel::actualizarHorario,
+        onCrearReserva = viewModel::crearReserva,
+        onIniciarFormularioEquipo = viewModel::iniciarFormularioEquipo,
+        onNombreEquipoChange = viewModel::actualizarNombreEquipo,
+        onDescripcionEquipoChange = viewModel::actualizarDescripcionEquipo,
+        onCategoriaEquipoChange = viewModel::actualizarCategoriaEquipo,
+        onEstadoDevolucionChange = viewModel::actualizarEstadoDevolucion,
+        onObservacionesDevolucionChange = viewModel::actualizarObservacionesDevolucion,
+        onAgregarEquipo = viewModel::agregarEquipo,
+        onConfirmarRetiro = viewModel::confirmarRetiro,
+        onRegistrarDevolucion = viewModel::registrarDevolucion,
+        onLimpiarMensajes = viewModel::limpiarMensajes,
+        themeMode = themeMode,
+        onThemeModeChange = onThemeModeChange
     )
 }
