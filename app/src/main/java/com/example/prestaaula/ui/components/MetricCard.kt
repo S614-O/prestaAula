@@ -1,8 +1,7 @@
 package com.example.prestaaula.ui.components
 
-// NOTAS DE AMARO Y SOTO
-// Tarjeta pequeña para mostrar un número importante y su título en Reportes.
-// La idea de estos comentarios es explicar el código como apunte de clase.
+// Tarjeta pequena para mostrar un numero importante y su titulo en Reportes
+// La idea de estos comentarios es explicar el codigo como apunte de clase
 
 
 import androidx.compose.foundation.layout.Column
@@ -16,14 +15,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.prestaaula.ui.theme.PrestaAulaElevation
 
 @Composable
-// Componente simple para no repetir el mismo diseño en cada indicador.
+// Componente simple para no repetir el mismo diseno en cada indicador
 fun MetricCard(valor: String, titulo: String, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = PrestaAulaElevation.Level1)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(valor, style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)

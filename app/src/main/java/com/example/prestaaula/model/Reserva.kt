@@ -1,11 +1,11 @@
 package com.example.prestaaula.model
 
 // Modelo de reserva que usan las pantallas
-// Incluye datos del equipo y el estado del proceso de prestamo.
-// La idea de estos comentarios es explicar el código como apunte de clase
+// Incluye datos del equipo y el estado del proceso de prestamo
+// La idea de estos comentarios es explicar el codigo como apunte de clase
 
 
-// Representa una reserva lista para mostrarse en las pantallas.
+// Representa una reserva lista para mostrarse en las pantallas
 data class Reserva(
     val id: String,
     val equipoId: String,

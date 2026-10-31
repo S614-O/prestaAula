@@ -1,8 +1,7 @@
 package com.example.prestaaula.ui.components
 
-// NOTAS DE AMARO Y SOTO
-// Barra inferior compartida entre Inventario y Mis reservas.
-// La idea de estos comentarios es explicar el código como apunte de clase.
+// Barra inferior compartida entre Inventario y Mis reservas
+// La idea de estos comentarios es explicar el codigo como apunte de clase
 
 
 import androidx.compose.material3.NavigationBar
@@ -12,7 +11,7 @@ import androidx.compose.runtime.Composable
 import com.example.prestaaula.navigation.Routes
 
 @Composable
-// La pestaña activa se marca comparando la ruta actual con cada opción.
+// La pestana activa se marca comparando la ruta actual con cada opcion
 fun PrestaAulaBottomBar(
     selectedRoute: String,
     onNavigate: (String) -> Unit

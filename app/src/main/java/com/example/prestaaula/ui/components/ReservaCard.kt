@@ -1,8 +1,7 @@
 package com.example.prestaaula.ui.components
 
-// NOTAS DE AMARO Y SOTO
-// Tarjeta para mostrar una reserva y permitir confirmar el retiro cuando todavía está reservada.
-// La idea de estos comentarios es explicar el código como apunte de clase.
+// Tarjeta para mostrar una reserva y permitir confirmar el retiro cuando todavia esta reservada
+// La idea de estos comentarios es explicar el codigo como apunte de clase
 
 
 import androidx.compose.foundation.layout.Arrangement
@@ -22,15 +21,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.prestaaula.ui.theme.PrestaAulaElevation
 import com.example.prestaaula.model.Reserva
 
 @Composable
-// Muestra datos principales de una reserva y el botón que corresponde a su estado.
-fun ReservaCard(reserva: Reserva, onConfirmarRetiro: (String) -> Unit) {
+// Muestra datos principales de una reserva y el boton que corresponde a su estado
+fun ReservaCard(
+    reserva: Reserva,
+    onConfirmarRetiro: (String) -> Unit,
+    botonDeshabilitado: Boolean = false
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = PrestaAulaElevation.Level1)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -41,13 +45,17 @@ fun ReservaCard(reserva: Reserva, onConfirmarRetiro: (String) -> Unit) {
             Spacer(Modifier.height(6.dp))
             Text("${reserva.fecha} · ${reserva.horario}", style = MaterialTheme.typography.bodyMedium)
             Text("${reserva.curso} · ${reserva.docente}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            // Solo una reserva pendiente puede confirmar el retiro.
+            // Solo una reserva pendiente puede confirmar el retiro
             if (reserva.estado == "RESERVADA") {
                 Spacer(Modifier.height(12.dp))
-                Button(onClick = { onConfirmarRetiro(reserva.id) }, modifier = Modifier.fillMaxWidth()) {
+                Button(
+                    onClick = { onConfirmarRetiro(reserva.id) },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !botonDeshabilitado
+                ) {
                     Text("Confirmar retiro")
                 }
-            // Si ya se retiró, mostramos el aviso y desactivamos el botón.
+            // Si ya se retiro mostramos el aviso y desactivamos el boton
             } else if (reserva.estado == "RETIRADA") {
                 Spacer(Modifier.height(12.dp))
                 OutlinedButton(onClick = {}, modifier = Modifier.fillMaxWidth(), enabled = false) {

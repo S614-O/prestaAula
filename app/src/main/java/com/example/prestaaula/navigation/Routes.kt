@@ -1,11 +1,12 @@
 package com.example.prestaaula.navigation
 
-// Nombres de las rutas. Así evitamos escribir las mismas cadenas en muchos archivos.
+import com.example.prestaaula.model.Rol
 
-
-// Guardamos los nombres de ruta en un solo lugar para no equivocarnos al escribirlos.
+// Nombres de las rutas para no escribir las mismas cadenas en varios archivos
 object Routes {
     const val INICIO = "inicio"
+    const val LOGIN_PATTERN = "login/{rol}"
+    const val LOGIN_ARG = "rol"
     const val INVENTARIO = "inventario"
     const val NUEVA_RESERVA_PATTERN = "nueva_reserva/{equipoId}"
     const val NUEVA_RESERVA_ARG = "equipoId"
@@ -13,6 +14,9 @@ object Routes {
     const val REGISTRAR_DEVOLUCION = "registrar_devolucion"
     const val REPORTES = "reportes"
 
-    // El ID se agrega a la ruta para que el formulario reciba el equipo elegido.
+    // La ruta lleva el rol para que el login sepa a quien esta dando acceso
+    fun login(rol: Rol): String = "login/${rol.name}"
+
+    // El ID se agrega a la ruta para que el formulario reciba el equipo elegido
     fun nuevaReserva(equipoId: String): String = "nueva_reserva/$equipoId"
 }
